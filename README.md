@@ -2,53 +2,51 @@
 
 أداة تجلب تغريدات حسابات تويتر المختارة وتعيد صياغتها بأسلوب تثقيفي عقاري، ثم تصدّرها كملف Excel وMarkdown.
 
+**⭐ مجاني تماماً** — لا يحتاج Twitter API ولا أي اشتراك مدفوع.
+
 ---
 
-## 🚀 طريقة التشغيل من GitHub
+## 🚀 التشغيل من GitHub
 
-### الخطوة ١ — إضافة المفاتيح السرية
+### الخطوة ١ — إضافة مفتاح Anthropic
 
 اذهب إلى: **Settings → Secrets and variables → Actions → New repository secret**
 
-أضف هذه المفاتيح:
+| الاسم | القيمة |
+|-------|--------|
+| `ANTHROPIC_API_KEY` | من [console.anthropic.com](https://console.anthropic.com) |
 
-| الاسم | من أين تحصل عليه |
-|-------|-----------------|
-| `TWITTER_API_KEY` | [developer.twitter.com](https://developer.twitter.com) |
-| `TWITTER_API_SECRET` | نفس المصدر |
-| `TWITTER_ACCESS_TOKEN` | نفس المصدر |
-| `TWITTER_ACCESS_SECRET` | نفس المصدر |
-| `ANTHROPIC_API_KEY` | [console.anthropic.com](https://console.anthropic.com) |
-
-> ملاحظة: `GITHUB_TOKEN` يُضاف تلقائياً من GitHub، لا تحتاج إضافته.
+> هذا المفتاح الوحيد المطلوب. الباقي يُضاف تلقائياً.
 
 ---
 
 ### الخطوة ٢ — تشغيل العملية
 
-1. اذهب إلى تبويب **Actions**
-2. اختر **"جلب وإعادة صياغة المحتوى"**
-3. اضغط **"Run workflow"**
-4. حدد اسم الحساب وعدد التغريدات
-5. اضغط **"Run workflow"** الخضراء
+1. اذهب إلى تبويب **Actions** في المستودع
+2. اختر **"جلب وإعادة صياغة المحتوى"** من القائمة اليسرى
+3. اضغط **Run workflow** (يمين)
+4. حدد:
+   - **اسم الحساب**: مثل `ahmed_alshuhail`
+   - **عدد التغريدات**: 20 / 50 / 100 / 200
+5. اضغط الزر الأخضر **Run workflow**
 
 ---
 
 ### الخطوة ٣ — النتائج
 
-بعد انتهاء العملية (5-10 دقائق) ستجد:
+بعد انتهاء العملية (3-7 دقائق) ستجد:
 
-**في مجلد `content/`:**
+**أ. في مجلد `content/` على GitHub مباشرة:**
 ```
 content/
 ├── README.md                          ← فهرس بكل الملفات
 └── ahmed_alshuhail/
-    └── 2025-06-02/
-        ├── ahmed_alshuhail_2025-06-02.xlsx   ← ملف Excel
-        └── ahmed_alshuhail_2025-06-02.md     ← تقرير للقراءة
+    └── 2025-06-03/
+        ├── ahmed_alshuhail_2025-06-03.xlsx   ← ملف Excel
+        └── ahmed_alshuhail_2025-06-03.md     ← تقرير للقراءة
 ```
 
-**في تبويب Actions:**
+**ب. في تبويب Actions:**
 - اضغط على آخر تشغيل → **Artifacts** → حمّل ملف `content-...`
 
 ---
@@ -64,31 +62,24 @@ content/
 
 ---
 
-## 🗂️ هيكل المشروع
+## 🔧 كيف يعمل
 
 ```
-├── index.js                    ← نقطة الدخول
-├── src/
-│   ├── twitter.js              ← جلب التغريدات
-│   ├── rewriter.js             ← إعادة الصياغة بـ Claude AI
-│   ├── exporter.js             ← تصدير Excel وMarkdown
-│   └── github.js               ← رفع الملفات على GitHub
-├── .github/
-│   └── workflows/
-│       └── fetch-content.yml   ← GitHub Actions
-├── .env.example
-└── package.json
+Nitter (سيرفر بديل لتويتر مجاني)
+    ↓
+استخراج آخر 100 تغريدة
+    ↓
+Claude AI يعيد صياغة كل تغريدة بأسلوب عقاري
+    ↓
+حفظ في Excel + Markdown
+    ↓
+رفع على GitHub
 ```
 
 ---
 
-## 💻 التشغيل المحلي (اختياري)
+## ⚠️ ملاحظات
 
-```bash
-git clone https://github.com/ibrahim1411m/twitter-realestate-content-rewriter
-cd twitter-realestate-content-rewriter
-npm install
-cp .env.example .env
-# أضف مفاتيحك في .env
-node index.js --account ahmed_alshuhail --max 100
-```
+- إذا فشل سيرفر Nitter، البرنامج يجرب 7 سيرفرات بديلة تلقائياً
+- إذا فشلت كل السيرفرات، انتظر 30 دقيقة وأعد المحاولة
+- الحساب المستهدف يجب أن يكون **عاماً** (غير محمي)

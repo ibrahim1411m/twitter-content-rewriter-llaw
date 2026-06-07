@@ -15,11 +15,11 @@ config();
 console.log(`
 ╔══════════════════════════════════════════╗
 ║   Twitter → محتوى عقاري تثقيفي          ║
+║   (يعمل بدون Twitter API عبر Nitter)    ║
 ╚══════════════════════════════════════════╝
 `);
 
 async function main() {
-  // قراءة الخيارات
   const { values } = parseArgs({
     options: {
       account: { type: "string", short: "a", default: "ahmed_alshuhail" },
@@ -28,29 +28,28 @@ async function main() {
     },
   });
 
-  const username = values.account;
+  const username = values.account.replace("@", "");
   const max = parseInt(values.max, 10);
   const outputDir = values.output;
 
-  // التحقق من المفاتيح المطلوبة
   checkEnv();
 
   try {
-    // ١. جلب التغريدات
     const { user, tweets } = await fetchTweets(username, max);
 
-    // ٢. إعادة الصياغة
+    if (tweets.length === 0) {
+      console.log("⚠️  لم يتم جلب أي تغريدات");
+      process.exit(1);
+    }
+
     const results = await rewriteTweets(tweets);
 
-    // ٣. تصدير Excel + Markdown محلياً
     console.log("\n💾 جاري التصدير...");
     const date = new Date().toISOString().slice(0, 10);
     const { xlsxPath, mdPath } = await exportResults({ user, results }, outputDir);
 
-    // ٤. رفع على GitHub
     const uploaded = await uploadToGitHub(xlsxPath, mdPath, username, date);
 
-    // ملخص
     console.log("\n" + "═".repeat(45));
     console.log("✅ اكتملت العملية");
     console.log("═".repeat(45));
@@ -72,17 +71,9 @@ async function main() {
 }
 
 function checkEnv() {
-  const required = [
-    "ANTHROPIC_API_KEY",
-    "TWITTER_API_KEY",
-    "TWITTER_API_SECRET",
-    "TWITTER_ACCESS_TOKEN",
-    "TWITTER_ACCESS_SECRET",
-  ];
-  const missing = required.filter((k) => !process.env[k]);
-  if (missing.length) {
-    console.error("❌ مفاتيح مفقودة في ملف .env:");
-    missing.forEach((k) => console.error(`   • ${k}`));
+  if (!process.env.ANTHROPIC_API_KEY) {
+    console.error("❌ مفتاح ANTHROPIC_API_KEY مفقود");
+    console.error("   أضفه في GitHub: Settings → Secrets and variables → Actions");
     process.exit(1);
   }
 }
