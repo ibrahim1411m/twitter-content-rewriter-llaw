@@ -15,7 +15,7 @@ config();
 console.log(`
 ╔══════════════════════════════════════════╗
 ║   Twitter → محتوى عقاري تثقيفي          ║
-║   (يعمل بدون Twitter API عبر Nitter)    ║
+║   (مدعوم بـ Apify)                      ║
 ╚══════════════════════════════════════════╝
 `);
 
@@ -71,9 +71,11 @@ async function main() {
 }
 
 function checkEnv() {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    console.error("❌ مفتاح ANTHROPIC_API_KEY مفقود");
-    console.error("   أضفه في GitHub: Settings → Secrets and variables → Actions");
+  const required = ["ANTHROPIC_API_KEY", "APIFY_TOKEN"];
+  const missing = required.filter((k) => !process.env[k]);
+  if (missing.length) {
+    console.error("❌ مفاتيح مفقودة:");
+    missing.forEach((k) => console.error(`   • ${k}`));
     process.exit(1);
   }
 }

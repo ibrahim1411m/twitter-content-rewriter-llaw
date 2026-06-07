@@ -17,19 +17,17 @@ on:
           - "50"
           - "100"
           - "200"
+          - "500"
 
 jobs:
   fetch-and-rewrite:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
-      - name: استنساخ المستودع
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: إعداد Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "20"
 
@@ -39,6 +37,7 @@ jobs:
       - name: تشغيل البرنامج
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPO: ${{ github.repository }}
           GITHUB_BRANCH: main
@@ -47,7 +46,7 @@ jobs:
             --account ${{ github.event.inputs.account }} \
             --max ${{ github.event.inputs.max_tweets }}
 
-      - name: رفع ملفات الإخراج كـ Artifact
+      - name: رفع الملفات كـ Artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
