@@ -62,4 +62,44 @@ async function rewriteOne(originalText) {
 - التغريدة كاملة في فقرة واحدة (لا تقسمها لأجزاء)
 - لا تقل عن 280 حرف
 - بدون هاشتاقات أو إيموجي
-- أضف قيمة عقارية
+- أضف قيمة عقارية حقيقية
+- لا تنسخ النص حرفياً
+
+أجب بـ JSON فقط بدون أي نص قبله أو بعده:
+{
+  "tweet": "نص التغريدة المعاد صياغتها",
+  "category": "توعية عقارية",
+  "score": 8
+}
+
+التصنيف يكون أحد: توعية عقارية / نصائح استثمارية / أخبار السوق / تمويل عقاري / قانوني وتنظيمي`,
+      },
+    ],
+  });
+
+  const text = response.content[0].text;
+  return extractJSON(text);
+}
+
+function extractJSON(text) {
+  let cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+  const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+  if (jsonMatch) cleaned = jsonMatch[0];
+
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    try {
+      const fixed = cleaned.replace(/,(\s*[}\]])/g, "$1");
+      return JSON.parse(fixed);
+    } catch {
+      return {
+        tweet: cleaned.slice(0, 280),
+        category: "عام",
+        score: 5,
+      };
+    }
+  }
+}
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
