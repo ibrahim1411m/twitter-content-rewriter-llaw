@@ -18,31 +18,23 @@ export async function rewriteTweets(tweets) {
       const suggestion = await rewriteOne(tweet.text);
 
       results.push({
-        // البيانات الأصلية
         original_id: tweet.id,
         original_text: tweet.text,
         original_date: tweet.created_at,
         original_likes: tweet.likes,
         original_retweets: tweet.retweets,
-
-        // المقترح الجديد
-        suggested_tweet: suggestion.tweet,
-        suggested_thread: suggestion.thread.join("\n---\n"),
-        hashtags: suggestion.hashtags.join(" "),
-        category: suggestion.category,
-        score: suggestion.score,
-
-        // حالة النشر (للمحرر)
+        suggested_tweet: suggestion.tweet || "",
+        category: suggestion.category || "عام",
+        score: typeof suggestion.score === "number" ? suggestion.score : 5,
         status: "لم ينشر",
         notes: "",
       });
 
       done++;
-      if (done % 10 === 0 || done === tweets.length) {
+      if (done % 5 === 0 || done === tweets.length) {
         console.log(`   ⏳ ${done}/${tweets.length}`);
       }
 
-      // تأخير بسيط بين الطلبات
       await sleep(500);
     } catch (err) {
       console.error(`   ⚠️ خطأ في تغريدة ${tweet.id}: ${err.message}`);
@@ -56,7 +48,7 @@ export async function rewriteTweets(tweets) {
 async function rewriteOne(originalText) {
   const response = await client.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 1000,
+    max_tokens: 800,
     messages: [
       {
         role: "user",
@@ -67,24 +59,7 @@ async function rewriteOne(originalText) {
 
 القواعد:
 - أسلوب تثقيفي موثوق بعربية سلسة
-- التغريدة الرئيسية لا تقل من 280 حرف
-- أضف قيمة عقارية حقيقية
-- لا تنسخ النص حرفياً
-
-أجب بـ JSON فقط بهذا الشكل:
-{
-  "tweet": "نص التغريدة الرئيسية",
-  "thread": ["تغريدة تكميلية 1", "تغريدة تكميلية 2"],
-  "category": "التصنيف (توعية عقارية / نصائح استثمارية / أخبار السوق / تمويل عقاري)",
-  "score": 8
-}`,
-      },
-    ],
-  });
-
-  const text = response.content[0].text;
-  const clean = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-  return JSON.parse(clean);
-}
-
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+- التغريدة كاملة في فقرة واحدة (لا تقسمها لأجزاء)
+- لا تقل عن 280 حرف
+- بدون هاشتاقات أو إيموجي
+- أضف قيمة عقارية
