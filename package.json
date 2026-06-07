@@ -1,0 +1,21 @@
+{
+  "name": "twitter-realestate-content-rewriter",
+  "version": "1.0.0",
+  "description": "جلب محتوى تويتر وإعادة صياغته لحسابات العقارات التثقيفية",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "fetch": "node index.js --account ahmed_alshuhail --max 100"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.53.0",
+    "@octokit/rest": "^21.0.0",
+    "dotenv": "^16.4.5",
+    "exceljs": "^4.4.0",
+    "twitter-api-v2": "^1.19.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

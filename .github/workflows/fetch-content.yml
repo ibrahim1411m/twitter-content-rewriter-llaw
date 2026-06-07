@@ -1,0 +1,59 @@
+name: جلب وإعادة صياغة المحتوى
+
+on:
+  workflow_dispatch:
+    inputs:
+      account:
+        description: "اسم حساب تويتر (بدون @)"
+        required: true
+        default: "ahmed_alshuhail"
+      max_tweets:
+        description: "عدد التغريدات"
+        required: true
+        default: "100"
+        type: choice
+        options:
+          - "50"
+          - "100"
+          - "200"
+
+jobs:
+  fetch-and-rewrite:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: استنساخ المستودع
+        uses: actions/checkout@v4
+
+      - name: إعداد Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: تثبيت الحزم
+        run: npm install
+
+      - name: تشغيل البرنامج
+        env:
+          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: ${{ github.repository }}
+          GITHUB_BRANCH: main
+        run: |
+          node index.js \
+            --account ${{ github.event.inputs.account }} \
+            --max ${{ github.event.inputs.max_tweets }}
+
+      - name: رفع ملفات الإخراج
+        uses: actions/upload-artifact@v4
+        with:
+          name: content-${{ github.event.inputs.account }}-${{ github.run_number }}
+          path: output/
+          retention-days: 30
