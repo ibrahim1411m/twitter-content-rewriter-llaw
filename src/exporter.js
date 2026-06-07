@@ -15,11 +15,9 @@ export async function exportResults(data, outputDir = "./output") {
   const username = user.username || "account";
   const baseName = `${username}_${date}`;
 
-  // تصدير Excel
   const xlsxPath = path.join(outputDir, `${baseName}.xlsx`);
   await exportExcel(results, xlsxPath, user);
 
-  // تصدير Markdown
   const mdPath = path.join(outputDir, `${baseName}.md`);
   await exportMarkdown(results, mdPath, user, date);
 
@@ -31,23 +29,20 @@ async function exportExcel(results, filePath, user) {
   workbook.creator = "Twitter Realestate Rewriter";
   workbook.created = new Date();
 
-  // ورقة المحتوى الرئيسية
   const sheet = workbook.addWorksheet("المحتوى", {
     views: [{ rightToLeft: true }],
   });
 
-  // تعريف الأعمدة
+  // الأعمدة
   sheet.columns = [
     { header: "م", key: "index", width: 5 },
     { header: "التاريخ الأصلي", key: "original_date", width: 14 },
     { header: "التصنيف", key: "category", width: 18 },
     { header: "التقييم", key: "score", width: 10 },
-    { header: "التغريدة الأصلية", key: "original_text", width: 45 },
-    { header: "المقترح الجديد", key: "suggested_tweet", width: 45 },
-    { header: "خيط التغريدة", key: "suggested_thread", width: 40 },
-    { header: "الوسوم", key: "hashtags", width: 30 },
+    { header: "التغريدة الأصلية", key: "original_text", width: 50 },
+    { header: "المقترح الجديد", key: "suggested_tweet", width: 50 },
     { header: "الإعجابات", key: "original_likes", width: 12 },
-    { header: "الحالة", key: "status", width: 14 },
+    { header: "الحالة", key: "status", width: 16 },
     { header: "ملاحظات", key: "notes", width: 25 },
   ];
 
@@ -73,10 +68,8 @@ async function exportExcel(results, filePath, user) {
       score: item.score,
       original_text: item.original_text,
       suggested_tweet: item.suggested_tweet,
-      suggested_thread: item.suggested_thread,
-      hashtags: item.hashtags,
       original_likes: item.original_likes,
-      status: item.status,
+      status: "لم يتم",
       notes: item.notes,
     });
 
@@ -89,16 +82,17 @@ async function exportExcel(results, filePath, user) {
       };
     }
 
-    // لون خلية الحالة
+    // خلية الحالة بلون أصفر وقابلة للقائمة المنسدلة
     const statusCell = row.getCell("status");
     statusCell.fill = {
       type: "pattern",
       pattern: "solid",
       fgColor: { argb: "FFFFF3CD" },
     };
-    statusCell.alignment = { horizontal: "center" };
+    statusCell.alignment = { horizontal: "center", vertical: "middle" };
+    statusCell.font = { bold: true };
 
-    // لون خلية التقييم حسب الرقم
+    // تقييم بألوان
     const scoreCell = row.getCell("score");
     scoreCell.alignment = { horizontal: "center" };
     if (item.score >= 8) {
@@ -109,18 +103,51 @@ async function exportExcel(results, filePath, user) {
       scoreCell.font = { color: { argb: "FFDC3545" } };
     }
 
-    // تفاف النص في خلايا المحتوى
     row.getCell("original_text").alignment = { wrapText: true, vertical: "top" };
     row.getCell("suggested_tweet").alignment = { wrapText: true, vertical: "top" };
-    row.getCell("suggested_thread").alignment = { wrapText: true, vertical: "top" };
 
-    row.height = 60;
+    row.height = 70;
+  });
+
+  // 🎯 إضافة قائمة منسدلة (تم / لم يتم) لعمود الحالة لجميع الصفوف
+  const lastRow = results.length + 1;
+  sheet.dataValidations.add(`H2:H${lastRow}`, {
+    type: "list",
+    allowBlank: false,
+    formulae: ['"تم,لم يتم"'],
+    showErrorMessage: true,
+    errorTitle: "خطأ",
+    error: "اختر إما 'تم' أو 'لم يتم'",
+    showInputMessage: true,
+    promptTitle: "حالة النشر",
+    prompt: "اختر من القائمة",
+  });
+
+  // 🎨 تنسيق شرطي: لون أخضر لـ "تم" وأصفر لـ "لم يتم"
+  sheet.addConditionalFormatting({
+    ref: `H2:H${lastRow}`,
+    rules: [
+      {
+        type: "containsText",
+        operator: "containsText",
+        text: "تم",
+        formulae: ['"تم"'],
+        style: {
+          fill: {
+            type: "pattern",
+            pattern: "solid",
+            bgColor: { argb: "FFD1E7DD" },
+          },
+          font: { color: { argb: "FF0F5132" }, bold: true },
+        },
+      },
+    ],
   });
 
   // تجميد السطر الأول
   sheet.views = [{ state: "frozen", ySplit: 1, rightToLeft: true }];
 
-  // ورقة ملخص
+  // ورقة الملخص
   const summarySheet = workbook.addWorksheet("ملخص", {
     views: [{ rightToLeft: true }],
   });
@@ -153,14 +180,7 @@ async function exportMarkdown(results, filePath, user, date) {
   results.forEach((item, i) => {
     md += `## ${i + 1}. ${item.category} (${item.score}/10)\n\n`;
     md += `**الأصلي:**\n> ${item.original_text}\n\n`;
-    md += `**المقترح:**\n> ${item.suggested_tweet}\n\n`;
-    if (item.suggested_thread) {
-      md += `**الخيط:**\n${item.suggested_thread
-        .split("\n---\n")
-        .map((t) => `> ${t}`)
-        .join("\n")}\n\n`;
-    }
-    md += `**الوسوم:** ${item.hashtags}\n\n---\n\n`;
+    md += `**المقترح:**\n> ${item.suggested_tweet}\n\n---\n\n`;
   });
 
   await fs.writeFile(filePath, md, "utf-8");
