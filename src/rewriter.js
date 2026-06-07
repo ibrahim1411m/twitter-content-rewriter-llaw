@@ -55,7 +55,7 @@ export async function rewriteTweets(tweets) {
 
 async function rewriteOne(originalText) {
   const response = await client.messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-sonnet-4-6",
     max_tokens: 1000,
     messages: [
       {
@@ -67,7 +67,7 @@ async function rewriteOne(originalText) {
 
 القواعد:
 - أسلوب تثقيفي موثوق بعربية سلسة
-- التغريدة الرئيسية أقل من 280 حرف
+- التغريدة الرئيسية لا تقل من 280 حرف
 - أضف قيمة عقارية حقيقية
 - لا تنسخ النص حرفياً
 
@@ -75,7 +75,6 @@ async function rewriteOne(originalText) {
 {
   "tweet": "نص التغريدة الرئيسية",
   "thread": ["تغريدة تكميلية 1", "تغريدة تكميلية 2"],
-  "hashtags": ["#وسم1", "#وسم2", "#وسم3"],
   "category": "التصنيف (توعية عقارية / نصائح استثمارية / أخبار السوق / تمويل عقاري)",
   "score": 8
 }`,
