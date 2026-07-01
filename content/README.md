@@ -10,3 +10,4 @@
 | @almuhaize_law | 2026-06-09 | [تحميل](content/almuhaize_law/2026-06-09/almuhaize_law_2026-06-09.xlsx) | [عرض](content/almuhaize_law/2026-06-09/almuhaize_law_2026-06-09.md) |
 | @Aguillemes | 2026-06-17 | [تحميل](content/Aguillemes/2026-06-17/Aguillemes_2026-06-17.xlsx) | [عرض](content/Aguillemes/2026-06-17/Aguillemes_2026-06-17.md) |
 | @kobraish | 2026-06-22 | [تحميل](content/kobraish/2026-06-22/kobraish_2026-06-22.xlsx) | [عرض](content/kobraish/2026-06-22/kobraish_2026-06-22.md) |
+| @RobertFreundLaw | 2026-07-01 | [تحميل](content/RobertFreundLaw/2026-07-01/RobertFreundLaw_2026-07-01.xlsx) | [عرض](content/RobertFreundLaw/2026-07-01/RobertFreundLaw_2026-07-01.md) |
