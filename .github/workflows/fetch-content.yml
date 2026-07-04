@@ -18,6 +18,14 @@ on:
           - "100"
           - "200"
           - "500"
+      mode:
+        description: "وضع التشغيل"
+        required: true
+        default: "rewrite"
+        type: choice
+        options:
+          - "rewrite"
+          - "fetch_only"
 
 jobs:
   fetch-and-rewrite:
@@ -44,7 +52,8 @@ jobs:
         run: |
           node index.js \
             --account ${{ github.event.inputs.account }} \
-            --max ${{ github.event.inputs.max_tweets }}
+            --max ${{ github.event.inputs.max_tweets }} \
+            --mode ${{ github.event.inputs.mode }}
 
       - name: رفع الملفات كـ Artifact
         if: always()
