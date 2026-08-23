@@ -13,3 +13,4 @@
 | @RobertFreundLaw | 2026-07-01 | [تحميل](content/RobertFreundLaw/2026-07-01/RobertFreundLaw_2026-07-01.xlsx) | [عرض](content/RobertFreundLaw/2026-07-01/RobertFreundLaw_2026-07-01.md) |
 | @mamzaid9 | 2026-07-04 | [تحميل](content/mamzaid9/2026-07-04/mamzaid9_2026-07-04.xlsx) | [عرض](content/mamzaid9/2026-07-04/mamzaid9_2026-07-04.md) |
 | @LawPracticeTips | 2026-07-04 | [تحميل](content/LawPracticeTips/2026-07-04/LawPracticeTips_2026-07-04.xlsx) | [عرض](content/LawPracticeTips/2026-07-04/LawPracticeTips_2026-07-04.md) |
+| @DrMurya | 2026-08-23 | [تحميل](content/DrMurya/2026-08-23/DrMurya_2026-08-23.xlsx) | [عرض](content/DrMurya/2026-08-23/DrMurya_2026-08-23.md) |
