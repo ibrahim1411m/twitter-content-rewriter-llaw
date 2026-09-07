@@ -15,3 +15,4 @@
 | @LawPracticeTips | 2026-07-04 | [تحميل](content/LawPracticeTips/2026-07-04/LawPracticeTips_2026-07-04.xlsx) | [عرض](content/LawPracticeTips/2026-07-04/LawPracticeTips_2026-07-04.md) |
 | @DrMurya | 2026-08-23 | [تحميل](content/DrMurya/2026-08-23/DrMurya_2026-08-23.xlsx) | [عرض](content/DrMurya/2026-08-23/DrMurya_2026-08-23.md) |
 | @Almuhaize_law | 2026-08-30 | [تحميل](content/Almuhaize_law/2026-08-30/Almuhaize_law_2026-08-30.xlsx) | [عرض](content/Almuhaize_law/2026-08-30/Almuhaize_law_2026-08-30.md) |
+| @Dr_Alshuwaier | 2026-09-07 | [تحميل](content/Dr_Alshuwaier/2026-09-07/Dr_Alshuwaier_2026-09-07.xlsx) | [عرض](content/Dr_Alshuwaier/2026-09-07/Dr_Alshuwaier_2026-09-07.md) |
